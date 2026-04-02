@@ -61,6 +61,7 @@ CREATE TABLE users (
     username VARCHAR(50) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL
 );
+
 INSERT INTO users (username, password) VALUES ('admin', '12345');
 
 3. Cài đặt và Khởi chạy
@@ -71,13 +72,14 @@ Mở Terminal (Command Prompt) tại thư mục gốc của dự án.
 Cài đặt các thư viện cần thiết:
 
 Bash
-npm install
+```npm install```
 Kiểm tra file be/db.js để đảm bảo thông tin đăng nhập MySQL là chính xác (thường XAMPP có user là root và password để trống).
 
 Khởi chạy server:
 
 Bash
-node be/server.js
+```node be/server.js```
+
 Mở trình duyệt và truy cập: http://localhost:3000
 
 Đăng nhập bằng tài khoản mẫu:
