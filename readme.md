@@ -2,6 +2,8 @@
 
 Dự án ứng dụng web quản lý người dùng cơ bản với kiến trúc Client-Server. Ứng dụng cho phép xác thực người dùng an toàn và thực hiện các thao tác quản lý dữ liệu (CRUD).
 
+Demo link: https://drive.google.com/drive/folders/1fP-Xf_wGIGfoqbVg6Ngqe_oz73kE-1Ug?usp=sharing
+
 ## 🚀 Tính năng chính
 
 - **Xác thực người dùng (Authentication):** Đăng nhập an toàn sử dụng JSON Web Token (JWT). Bảo vệ các API bằng Middleware.
