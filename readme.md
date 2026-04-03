@@ -2,6 +2,8 @@
 
 Dự án ứng dụng web quản lý người dùng cơ bản với kiến trúc Client-Server. Ứng dụng cho phép xác thực người dùng an toàn và thực hiện các thao tác quản lý dữ liệu (CRUD).
 
+Demo link: https://drive.google.com/drive/folders/1fP-Xf_wGIGfoqbVg6Ngqe_oz73kE-1Ug?usp=sharing
+
 ## 🚀 Tính năng chính
 
 - **Xác thực người dùng (Authentication):** Đăng nhập an toàn sử dụng JSON Web Token (JWT). Bảo vệ các API bằng Middleware.
@@ -37,6 +39,7 @@ TMA/
 │   └── login.html
 ├── package.json
 └── README.md
+```
 
 ⚙️ Hướng dẫn cài đặt và chạy dự án
 
@@ -60,6 +63,7 @@ CREATE TABLE users (
     username VARCHAR(50) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL
 );
+
 INSERT INTO users (username, password) VALUES ('admin', '12345');
 
 3. Cài đặt và Khởi chạy
@@ -70,13 +74,14 @@ Mở Terminal (Command Prompt) tại thư mục gốc của dự án.
 Cài đặt các thư viện cần thiết:
 
 Bash
-npm install
+```npm install```
 Kiểm tra file be/db.js để đảm bảo thông tin đăng nhập MySQL là chính xác (thường XAMPP có user là root và password để trống).
 
 Khởi chạy server:
 
 Bash
-node be/server.js
+```node be/server.js```
+
 Mở trình duyệt và truy cập: http://localhost:3000
 
 Đăng nhập bằng tài khoản mẫu:
