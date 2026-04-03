@@ -13,14 +13,14 @@ async function login(event) {
   const data = await res.json();
 
   if (data.success) {
-    // Lưu thông tin user (như cũ)
+    // Save user info (same as before)
     localStorage.setItem("user", JSON.stringify(data.user));
     
-    // THÊM DÒNG NÀY: Lưu token vào trình duyệt
+    // Save the token to localStorage for future authenticated requests    
     localStorage.setItem("token", data.token); 
     
     window.location.href = "dashboard.html";
   } else {
-    alert("Sai tài khoản hoặc mật khẩu");
+    alert("Invalid username or password");
   }
 }

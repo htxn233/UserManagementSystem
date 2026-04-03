@@ -8,7 +8,7 @@ function getAuthHeaders() {
   };
 }
 
-// 1. Tải danh sách user
+// 1. Load users list
 async function loadUsers() {
   try {
     const res = await fetch(API, {
@@ -16,25 +16,25 @@ async function loadUsers() {
       headers: getAuthHeaders() 
     });
 
-    if (!res.ok) throw new Error("Lỗi: " + res.status);
+    if (!res.ok) throw new Error("Error: " + res.status);
 
     const users = await res.json();
     const table = document.getElementById("userTable");
     table.innerHTML = "";
 
-    // LẤY THÔNG TIN USER ĐANG ĐĂNG NHẬP (từ lúc login lưu vào)
+    // Get current logged-in user info (saved in localStorage at login time)
     const currentUser = JSON.parse(localStorage.getItem("user"));
 
     users.forEach(u => {
-      // KIỂM TRA: Dòng hiện tại có phải là tài khoản đang đăng nhập không?
+      // CHECK: Is the current row the logged-in user?
       const isCurrentUser = currentUser && currentUser.id === u.id;
 
-      // Xử lý nút Xóa: Nếu là user đang đăng nhập thì Disable (làm mờ đi), ngược lại cho phép bấm
+      // Handle Delete button: If it's the logged-in user, disable (fade out), otherwise allow clicking
       const deleteBtn = isCurrentUser 
-        ? `<button disabled style="background-color: #ccc; cursor: not-allowed;" title="Không thể xóa chính mình">Delete</button>`
+        ? `<button disabled style="background-color: #ccc; cursor: not-allowed;" title="Cannot delete your own account">Delete</button>`
         : `<button onclick="deleteUser(${u.id})">Delete</button>`;
 
-      // Xử lý nút Sửa (Cho phép sửa tất cả, kể cả chính mình)
+      // Handle Edit button (allow editing all users, including the logged-in user)
       const editBtn = `<button onclick="editUser(${u.id}, '${u.username}')">Edit</button>`;
 
       table.innerHTML += `
@@ -54,7 +54,7 @@ async function loadUsers() {
   }
 }
 
-// 2. Thêm user
+// 2. Add a user
 async function addUser() {
   const username = document.getElementById("username").value;
   const password = document.getElementById("password").value;
@@ -68,7 +68,7 @@ async function addUser() {
   loadUsers();
 }
 
-// 3. Xóa user
+// 3. Delete user
 async function deleteUser(id) {
   await fetch(`${API}/${id}`, {
     method: "DELETE",
@@ -78,40 +78,40 @@ async function deleteUser(id) {
   loadUsers();
 }
 
-// 4. Đăng xuất
+// 4. Logout
 function logout() {
   localStorage.removeItem("user");
   localStorage.removeItem("token"); 
   window.location.href = "login.html";
 }
 
-// 5.Edit User
-// Cập nhật hàm Edit User để sửa cả mật khẩu
+// 5. Edit User
+// Update Edit User function to handle both username and password changes
 async function editUser(id, currentUsername) {
-  // 1. Hỏi Username mới (Hiển thị sẵn tên cũ, nếu xóa trắng thì lấy lại tên cũ)
-  let newUsername = prompt("Nhập Username mới:", currentUsername);
+  // 1. Ask for new Username (Pre-fill with current username, if left blank then keep the old username)
+  let newUsername = prompt("Enter new Username:", currentUsername);
   
-  // Nếu bấm Cancel (Hủy) ở ô Username thì dừng luôn
+  // If user clicks Cancel in the Username prompt, stop the process immediately
   if (newUsername === null) return; 
   
-  // Nếu lỡ xóa trắng thì mặc định giữ lại tên cũ
+  // If user leaves the Username field empty, keep the current username
   if (newUsername.trim() === "") {
       newUsername = currentUsername;
   }
 
-  // 2. Hỏi Password mới (Để trống nếu không muốn đổi)
-  const newPassword = prompt("Nhập Password mới:\n(Để trống nếu muốn giữ nguyên mật khẩu cũ)");
+  // 2. Ask for new Password (Leave blank if you don't want to change it)
+  const newPassword = prompt("Enter new Password:\n(Leave blank if you want to keep the current password)");
   
-  // Nếu bấm Cancel (Hủy) ở ô Password thì dừng luôn
+  // If user clicks Cancel in the Password prompt, stop the process immediately
   if (newPassword === null) return;
 
-  // Kiểm tra xem có gì thay đổi không? Nếu không đổi gì thì không cần gọi API cho đỡ tốn tài nguyên
+  // Check if there is any change at all. If not, no need to call API to save resources
   if (newUsername === currentUsername && newPassword.trim() === "") {
-      alert("Bạn chưa thay đổi thông tin gì.");
+      alert("You haven't changed any information.");
       return; 
   }
 
-  // Gói dữ liệu để gửi xuống Backend
+  // Pack the data to send to Backend
   const updateData = { 
       username: newUsername, 
       password: newPassword 
@@ -120,21 +120,21 @@ async function editUser(id, currentUsername) {
   try {
     const res = await fetch(`${API}/${id}`, {
       method: "PUT",
-      headers: getAuthHeaders(), // Nhớ dùng getAuthHeaders() để có Token
+      headers: getAuthHeaders(), // Remember to use getAuthHeaders() to include the Token
       body: JSON.stringify(updateData)
     });
 
-    if (!res.ok) throw new Error("Lỗi Server");
+    if (!res.ok) throw new Error("Server Error");
 
-    alert("Cập nhật thành công!");
+    alert("Update successful!");
     
-    // Tải lại bảng sau khi sửa
+    // Reload the table after editing
     loadUsers();
   } catch (error) {
-    console.error("Lỗi khi sửa:", error);
-    alert("Có lỗi xảy ra khi cập nhật!");
+    console.error("Error updating user:", error);
+    alert("An error occurred while updating the user!");
   }
 }
 
-// Chạy lần đầu khi load trang
+// Run this function once when the page loads
 loadUsers();

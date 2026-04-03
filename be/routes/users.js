@@ -3,7 +3,7 @@ const router = express.Router();
 const db = require("../db");
 const auth = require("../middleware/authMiddleware");
 
-// GET all users (THÊM `auth` VÀO ĐÂY)
+// GET all users 
 router.get("/", auth, (req, res) => {
   db.query("SELECT * FROM users", (err, results) => {
     res.json(results);
@@ -28,7 +28,7 @@ router.put("/:id", auth, (req, res) => {
   const { username, password } = req.body;
   const userId = req.params.id;
 
-  // Nếu người dùng có gửi mật khẩu mới lên thì Cập nhật cả 2
+  // If user provided a new password, update both username and password
   if (password && password.trim() !== "") {
     db.query(
       "UPDATE users SET username=?, password=? WHERE id=?",
@@ -39,7 +39,8 @@ router.put("/:id", auth, (req, res) => {
       }
     );
   } 
-  // Nếu không có mật khẩu mới, chỉ cập nhật Username
+
+  // If user did not provide a new password, only update the username
   else {
     db.query(
       "UPDATE users SET username=? WHERE id=?",
@@ -54,17 +55,17 @@ router.put("/:id", auth, (req, res) => {
 
 // DELETE
 router.delete("/:id", auth, (req, res) => {
-  const targetId = parseInt(req.params.id); // ID của tài khoản bị yêu cầu xóa
-  const currentUserId = req.user.id;        // ID của người đang thao tác (lấy từ Token)
+  const targetId = parseInt(req.params.id); // ID of the user to be deleted (from URL parameter)
+  const currentUserId = req.user.id;        // ID of the user performing the action (from Token)
 
-  // Nếu ID muốn xóa trùng với ID người đang đăng nhập -> Chặn lại
+  // If the ID to delete matches the current user's ID -> Block the action
   if (targetId === currentUserId) {
-    return res.status(403).json({ message: "Lỗi: Không thể tự xóa tài khoản của chính mình!" });
+    return res.status(403).json({ message: "Error: Cannot delete your own account!" });
   }
 
-  // Nếu không trùng thì tiến hành xóa bình thường
+  // If the IDs don't match, proceed with deletion
   db.query("DELETE FROM users WHERE id=?", [targetId], () => {
-    res.json({ message: "Delete thành công" });
+    res.json({ message: "Delete successful" });
   });
 });
 
